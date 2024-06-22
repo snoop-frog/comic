@@ -95,6 +95,17 @@
         .slide-down {
             transform: translateY(100%);
         }
+        #branding {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Quantify-Bold', sans-serif;
+            font-size: 70px;
+            color: rgba(255, 255, 255, 0.5);
+            pointer-events: none;
+            user-select: none;
+        }
     </style>
 </head>
 <body>
@@ -102,10 +113,12 @@
     <label for="baseId">PARENT:</label>
     <input type="text" id="baseId" placeholder="Inscription ID" value="0e7838c1c5c0bcd98453fe21047704f66a2efbccde43f5e220aa745a45fe6a2bi0">
     <div id="controls">
-        <button id="showImagesButton" onclick="showImages()">READ COMIC</button>
-        <button id="fullscreenButton" onclick="toggleFullscreen()">FULLSCREEN</button>
+        <button id="showImagesButton" onclick="showImages()">Read Comic</button>
+        <button id="fullscreenButton" onclick="toggleFullscreen()">Fullscreen</button>
     </div>
-    <div id="container"></div>
+    <div id="container">
+        <div id="branding">ORDINAUTS</div>
+    </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -122,7 +135,7 @@
             const showImagesButton = document.getElementById('showImagesButton');
             showImagesButton.disabled = true;
             const baseId = document.getElementById('baseId').value.trim();
-            document.getElementById('container').innerHTML = '';
+            document.getElementById('container').innerHTML = '<div id="branding">ORDINAUTS</div>';
             let i = 0;
             let hasMore = true;
             currentPage = 0;
