@@ -139,9 +139,9 @@
             let i = 0;
             let hasMore = true;
             currentPage = 0;
+            let pages = [];
 
             try {
-                let allPages = [];
                 while (hasMore) {
                     let url = `${baseURL}${baseId}/${i}`;
                     let response = await axios.get(url);
@@ -149,33 +149,31 @@
                     ids.forEach(id => {
                         let page = document.createElement('div');
                         page.classList.add('page');
-                        if (currentPage === 0) {
-                            page.classList.add('page-current');
-                        }
                         let img = document.createElement('img');
                         img.src = `${imageURLBase}${id}`;
                         img.alt = `Image for ID ${id}`;
                         img.onclick = (event) => handleImageClick(event);
                         page.appendChild(img);
-                        allPages.push(page);
-                        currentPage++;
+                        pages.push(page);
                     });
                     hasMore = response.data.more;
                     i++;
                 }
 
-                allPages.reverse(); // Reverse the order of pages
-                totalPages = currentPage;
-                currentPage = 0;
+                if (pages.length > 1) {
+                    let lastPage = pages.pop();
+                    pages.unshift(lastPage);
+                }
 
-                // Display the pages with the last one first
-                allPages.forEach((page, index) => {
+                pages.forEach((page, index) => {
                     if (index === 0) {
                         page.classList.add('page-current');
                     }
                     document.getElementById('container').appendChild(page);
                 });
 
+                totalPages = pages.length;
+                currentPage = 0;
                 console.log('Images loaded successfully.');
             } catch (error) {
                 console.error('Error loading images:', error);
