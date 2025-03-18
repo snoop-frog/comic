@@ -152,21 +152,24 @@
                     i++;
                 }
 
-                // Reorder the images to make the 9th image (index 8) appear first
-                if (allImages.length >= 9) {
-                    // Take the 9th image (cover)
-                    let coverImageId = allImages[8];
+                // Define the title page index (9th page, index 8)
+                const TITLE_PAGE_INDEX = 8;
+                
+                // Reorder the images to always make the 9th image appear first
+                if (allImages.length > TITLE_PAGE_INDEX) {
+                    // Take the title page (9th page, index 8)
+                    let titlePageId = allImages[TITLE_PAGE_INDEX];
                     
-                    // Create a new array with the cover first
-                    let reorderedImages = [coverImageId];
+                    // Create a new array with the title page first
+                    let reorderedImages = [titlePageId];
                     
-                    // Add pages 1-8 (index 0-7)
-                    for (let j = 0; j < 8; j++) {
+                    // Add pages before the title page (indices 0 to TITLE_PAGE_INDEX-1)
+                    for (let j = 0; j < TITLE_PAGE_INDEX; j++) {
                         reorderedImages.push(allImages[j]);
                     }
                     
-                    // Add the rest of pages after 9 (from index 9 onwards)
-                    for (let j = 9; j < allImages.length; j++) {
+                    // Add all pages after the title page (from TITLE_PAGE_INDEX+1 onwards)
+                    for (let j = TITLE_PAGE_INDEX + 1; j < allImages.length; j++) {
                         reorderedImages.push(allImages[j]);
                     }
                     
