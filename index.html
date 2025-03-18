@@ -129,8 +129,6 @@
         let totalPages = 0;
         let isTransitioning = false;
         const transitions = ['slide-left', 'slide-down', 'slide-right', 'slide-down', 'slide-left', 'slide-up'];
-        // Define the number of new pages added at the end.
-        const NEW_PAGES_COUNT = 9;
 
         async function showImages() {
             const showImagesButton = document.getElementById('showImagesButton');
@@ -140,7 +138,7 @@
             let i = 0;
             let hasMore = true;
             currentPage = 0;
-            let pages = [];
+            let allImages = [];
 
             try {
                 while (hasMore) {
@@ -148,43 +146,50 @@
                     let response = await axios.get(url);
                     let ids = response.data.ids;
                     ids.forEach(id => {
-                        let page = document.createElement('div');
-                        page.classList.add('page');
-                        let img = document.createElement('img');
-                        img.src = `${imageURLBase}${id}`;
-                        img.alt = `Image for ID ${id}`;
-                        img.onclick = (event) => handleImageClick(event);
-                        page.appendChild(img);
-                        pages.push(page);
+                        allImages.push(id);
                     });
                     hasMore = response.data.more;
                     i++;
                 }
 
-                // If there are both old and new pages,
-                // the comic cover is the last old page.
-                // Calculate the number of old pages.
-                if (pages.length > NEW_PAGES_COUNT) {
-                    const oldPagesCount = pages.length - NEW_PAGES_COUNT;
-                    // Remove the last old page (the comic cover)
-                    // and unshift it so it appears first.
-                    let comicCover = pages.splice(oldPagesCount - 1, 1)[0];
-                    pages.unshift(comicCover);
-                } else if (pages.length > 1) {
-                    // Fallback: if no new pages are added,
-                    // simply rotate so that the last page is first.
-                    let comicCover = pages.pop();
-                    pages.unshift(comicCover);
+                // Reorder the images to make the 9th image (index 8) appear first
+                if (allImages.length >= 9) {
+                    // Take the 9th image (cover)
+                    let coverImageId = allImages[8];
+                    
+                    // Create a new array with the cover first
+                    let reorderedImages = [coverImageId];
+                    
+                    // Add pages 1-8 (index 0-7)
+                    for (let j = 0; j < 8; j++) {
+                        reorderedImages.push(allImages[j]);
+                    }
+                    
+                    // Add the rest of pages after 9 (from index 9 onwards)
+                    for (let j = 9; j < allImages.length; j++) {
+                        reorderedImages.push(allImages[j]);
+                    }
+                    
+                    // Replace the original array with the reordered one
+                    allImages = reorderedImages;
                 }
 
-                pages.forEach((page, index) => {
+                // Create and add pages to the container
+                allImages.forEach((id, index) => {
+                    let page = document.createElement('div');
+                    page.classList.add('page');
                     if (index === 0) {
                         page.classList.add('page-current');
                     }
+                    let img = document.createElement('img');
+                    img.src = `${imageURLBase}${id}`;
+                    img.alt = `Image for ID ${id}`;
+                    img.onclick = (event) => handleImageClick(event);
+                    page.appendChild(img);
                     document.getElementById('container').appendChild(page);
                 });
 
-                totalPages = pages.length;
+                totalPages = allImages.length;
                 currentPage = 0;
                 console.log('Images loaded successfully.');
             } catch (error) {
